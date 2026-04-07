@@ -1,0 +1,37 @@
+# ── Secrets — NEVER commit ────────────────────────────────────────────────────
+.env
+*.env.local
+
+# ── SQLite database ───────────────────────────────────────────────────────────
+grc_database.db
+backups/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+pytest-cache-files-*/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Reports (generated output) ───────────────────────────────────────────────
+ISO27001_GRC_Report_*.xlsx
+
+# ── OS / editor artefacts ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
