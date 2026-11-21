@@ -1,0 +1,28 @@
+# Fictional example vendor — illustrates an AI inference provider review.
+name: Example LLM Inference Provider
+category: ai_provider
+business_owner: Engineering
+data_classification: confidential   # public | internal | confidential | restricted
+access_level: read                  # none | read | write | admin | network
+business_criticality: high          # low | medium | high
+processes_data_with_ai: true
+attestations:
+  - type: SOC 2 Type II
+    period_end: 2026-06-30
+  - type: ISO/IEC 27001
+    period_end: 2026-03-31
+contract:
+  dpa_signed: true
+  ai_data_use_terms: false
+answers:
+  IAM-01: true
+  IAM-02: true
+  END-01: true
+  ENC-01: true
+  ENC-02: true
+  AI-01: false
+  AI-02: false
+  PRIV-01: true
+  PRIV-02: true
+  IR-01: true
+last_reviewed: 2026-05-15

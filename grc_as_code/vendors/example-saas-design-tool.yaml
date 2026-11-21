@@ -1,0 +1,24 @@
+# Fictional example vendor — illustrates a low-risk SaaS review.
+name: Example SaaS Design Tool
+category: saas
+business_owner: Marketing
+data_classification: internal
+access_level: none
+business_criticality: low
+processes_data_with_ai: false
+attestations:
+  - type: SOC 2 Type II
+    period_end: 2026-09-30
+contract:
+  dpa_signed: false
+  ai_data_use_terms: false
+answers:
+  IAM-01: true
+  IAM-02: true
+  END-01: true
+  ENC-01: true
+  ENC-02: true
+  PRIV-01: true
+  PRIV-02: false
+  IR-01: true
+last_reviewed: 2026-10-01

@@ -1,0 +1,27 @@
+# Fictional example vendor — illustrates a colocation data center review.
+name: Example Colocation Data Center
+category: colocation
+business_owner: Infrastructure
+data_classification: restricted
+access_level: network
+business_criticality: high
+processes_data_with_ai: false
+attestations:
+  - type: SOC 2 Type II
+    period_end: 2025-09-30
+  - type: ISO/IEC 27001
+    period_end: 2026-08-31
+contract:
+  dpa_signed: true
+  ai_data_use_terms: false
+answers:
+  IAM-01: true
+  IAM-02: true
+  END-01: true
+  ENC-01: true
+  ENC-02: true
+  PRIV-01: true
+  PRIV-02: true
+  IR-01: false
+  PHY-01: true
+last_reviewed: 2025-10-01
