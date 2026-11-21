@@ -6,12 +6,13 @@ A Python-based, end-to-end **Governance, Risk & Compliance (GRC) automation plat
 
 It also includes a **GRC as Code** module: vendor security questionnaires, vendor tiering, security intake requests and the risk register live in Git as YAML, are validated in CI on every pull request, and produce Markdown risk memos, optionally drafted with Claude. See [GRC as Code](#10-grc-as-code).
 
-The platform supports five internationally recognised frameworks in a single installation:
+The platform supports six internationally recognised frameworks in a single installation:
 
 | Key | Standard | Scope |
 |---|---|---|
 | `ISO27001` | ISO/IEC 27001:2022 | Information Security Management System — 93 Annex A controls |
-| `SOC2` | AICPA Trust Services Criteria 2017 | Trust Services Criteria for service organisations |
+| `SOC1` | SSAE 18 (AT-C 320) / ISAE 3402 | Control objectives relevant to user entities' financial reporting (ICFR) — 24 objectives |
+| `SOC2` | AICPA Trust Services Criteria 2017 | All five Trust Services Categories for service organisations — 55 criteria |
 | `NISTCSF` | NIST Cybersecurity Framework 2.0 | US federal and industry cyber risk framework |
 | `PCIDSS` | PCI DSS v4.0 | Payment card industry data security standard |
 | `ISO42001` | ISO/IEC 42001:2023 | AI Management System — responsible AI governance |
@@ -121,6 +122,9 @@ python iso27001_grc_main.py --init
 
 # Initialise a different framework
 python iso27001_grc_main.py --init --framework SOC2
+
+# SOC 1 control objectives
+python iso27001_grc_main.py --init --framework SOC1
 ```
 
 **Key database table:** `controls`
@@ -372,7 +376,11 @@ The flagship framework. All 93 Annex A controls are implemented across four them
 
 ### AICPA SOC 2 — Trust Services Criteria (2017)
 
-32 criteria covering the five Trust Services Categories: Common Criteria (CC), Availability (A), Confidentiality (C), Processing Integrity (PI), and Privacy (P). Designed for service organisations undergoing SOC 2 Type I or Type II examinations.
+55 criteria covering all five Trust Services Categories: Common Criteria (CC series), Availability (A1.1–A1.3), Confidentiality (C1.1–C1.2), Processing Integrity (PI1.1–PI1.5), and Privacy (P1.1–P8.1). Designed for service organisations undergoing SOC 2 Type I or Type II examinations; the same criteria underpin a general-use SOC 3 report.
+
+### AICPA SOC 1 — SSAE 18 (AT-C 320) / ISAE 3402
+
+24 control objectives for service organisations whose services affect their customers' internal control over financial reporting. SOC 1 has no fixed criteria set, so the library provides a typical baseline that management adapts to its system description: entity-level controls; IT general controls for logical access (provisioning, terminations, quarterly access reviews, privileged access, authentication, segregation of duties), change management, program development and computer operations; business process objectives for transaction input, processing and output, interfaces and reconciliations; and the subservice organisation monitoring, complementary user entity controls (CUECs) and bridge letters every SOC 1 report addresses. Supports Type I and Type II engagements.
 
 ### NIST Cybersecurity Framework 2.0
 
@@ -410,7 +418,8 @@ multi-framework-grc-automation/
 │
 │  ── Control libraries ──────────────────────────────────────────────
 ├── iso27001_controls.py       ISO 27001:2022 — 93 Annex A controls
-├── soc2_controls.py           SOC 2 TSC 2017 — 32 Trust Services Criteria
+├── soc1_controls.py           SOC 1 (SSAE 18 / ISAE 3402) — 24 control objectives
+├── soc2_controls.py           SOC 2 TSC 2017 — 55 criteria across all five categories
 ├── nist_csf_controls.py       NIST CSF 2.0 — 31 controls across 6 functions
 ├── pci_dss_controls.py        PCI DSS v4.0 — 27 controls across 12 requirements
 ├── iso42001_controls.py       ISO 42001:2023 — 39 AI Management System controls
@@ -432,6 +441,7 @@ multi-framework-grc-automation/
 │  ── Tests and CI ────────────────────────────────────────────────────
 ├── tests/
 │   ├── test_vendor_risk.py    Tiering, red flags, intake, register, memo, CLI
+│   ├── test_control_libraries.py  Counts, fields and unique IDs for all six libraries
 │   └── test_grc_engine.py     Engine smoke tests on a throwaway database
 ├── .github/workflows/ci.yml   GitHub Actions: YAML validation + pytest
 │
@@ -491,6 +501,7 @@ All variables can be set in a `.env` file at the project root (loaded automatica
 ```bash
 # ── Phase 1: Initialise the control register ─────────────────────────
 python iso27001_grc_main.py --init                        # ISO 27001 (default)
+python iso27001_grc_main.py --init --framework SOC1       # SOC 1
 python iso27001_grc_main.py --init --framework SOC2       # SOC 2
 python iso27001_grc_main.py --init --framework NISTCSF    # NIST CSF 2.0
 python iso27001_grc_main.py --init --framework PCIDSS     # PCI DSS v4.0
@@ -592,7 +603,7 @@ The test suite needs no API keys or network access.
 pytest -v
 ```
 
-It covers vendor tiering thresholds, each red-flag rule, review cadence, memo rendering, the AI-summary fallback, intake scoring, risk register appetite and overdue checks, validation of every YAML file in the repository, and engine smoke tests (control libraries for all five frameworks, risk scoring, backup) on a throwaway database.
+It covers vendor tiering thresholds, each red-flag rule, review cadence, memo rendering, the AI-summary fallback, intake scoring, risk register appetite and overdue checks, validation of every YAML file in the repository, control-library integrity for all six frameworks (declared counts, required fields, unique IDs, full SOC 2 category coverage, SOC 1 ITGC and CUEC coverage), and engine smoke tests (control loading and evidence checklists for every framework, risk scoring, backup) on a throwaway database.
 
 ---
 
