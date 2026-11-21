@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Validate GRC YAML and run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate questionnaire, vendors, intake and risk register
+        run: python vendor_risk.py validate
+
+      - name: Run tests
+        run: pytest -v
+
+      - name: Vendor tiering and risk register report
+        run: |
+          python vendor_risk.py tier
+          python vendor_risk.py register
