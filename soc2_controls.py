@@ -10,7 +10,13 @@ Themes align with the Trust Services Categories:
   P   - Privacy
 
 SWOT Remediation — Prompt 9 (2026-04-07): added to support multi-framework.
+2026-11-21: added Processing Integrity (PI1.1–PI1.5) and Privacy (P1.1–P8.1) criteria.
 """
+
+STANDARD_VERSION        = "AICPA Trust Services Criteria (2017, revised points of focus 2022)"
+STANDARD_PUBLISHED_DATE = "2017-04-15"
+LIBRARY_LAST_REVIEWED   = "2026-11-21"
+CONTROL_COUNT_EXPECTED  = 55
 
 SOC2_CONTROLS = [
     # ─────────────────────────────────────────────────────────────────────────
@@ -234,4 +240,148 @@ SOC2_CONTROLS = [
      "description": "The entity disposes of confidential information to meet its confidentiality commitments.",
      "artifacts": ["Data retention policy", "Media disposal records", "Secure deletion evidence"],
      "test_procedure": "Inspect media disposal records; verify secure deletion procedures are followed."},
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # PI — PROCESSING INTEGRITY
+    # ─────────────────────────────────────────────────────────────────────────
+    {"id": "PI1.1", "theme": "Processing Integrity",
+     "title": "Processing Specifications and Data Definitions",
+     "description": "The entity obtains or generates, uses, and communicates relevant, quality information about processing objectives, including definitions of data processed and product and service specifications.",
+     "artifacts": ["System description", "Data dictionary", "Product / service specifications"],
+     "test_procedure": "Inspect data definitions and specifications for in-scope processing and evidence they are communicated to users."},
+
+    {"id": "PI1.2", "theme": "Processing Integrity",
+     "title": "System Inputs Are Complete and Accurate",
+     "description": "The entity implements policies and procedures over system inputs, including controls over completeness and accuracy, to meet its objectives.",
+     "artifacts": ["Input validation rules", "Input exception reports", "Resolution tickets"],
+     "test_procedure": "Inspect input validation configuration; for a sample of rejected inputs, inspect resolution."},
+
+    {"id": "PI1.3", "theme": "Processing Integrity",
+     "title": "System Processing Is Complete, Accurate and Timely",
+     "description": "The entity implements policies and procedures over system processing to result in products, services, and reporting that meet its objectives.",
+     "artifacts": ["Processing monitoring", "Job error logs", "Reprocessing records"],
+     "test_procedure": "Inspect processing monitoring and, for a sample of processing errors, investigation and correction."},
+
+    {"id": "PI1.4", "theme": "Processing Integrity",
+     "title": "System Outputs Are Complete, Accurate and Distributed Appropriately",
+     "description": "The entity implements policies and procedures to make outputs available or deliver them completely, accurately, and timely to intended parties.",
+     "artifacts": ["Output reconciliation", "Distribution controls", "Delivery logs"],
+     "test_procedure": "For a sample of outputs, agree to source data and inspect delivery to intended recipients."},
+
+    {"id": "PI1.5", "theme": "Processing Integrity",
+     "title": "Stored Inputs, Items in Processing and Outputs Are Protected",
+     "description": "The entity implements policies and procedures to store inputs, items in processing, and outputs completely, accurately, and timely.",
+     "artifacts": ["Data retention configuration", "Storage integrity checks", "Backup records"],
+     "test_procedure": "Inspect storage and retention configuration and integrity checks for in-scope data."},
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # P — PRIVACY
+    # ─────────────────────────────────────────────────────────────────────────
+    {"id": "P1.1", "theme": "Privacy",
+     "title": "Privacy Notice",
+     "description": "The entity provides notice to data subjects about its privacy practices, kept current and communicated in a timely manner.",
+     "artifacts": ["Privacy notice", "Notice version history"],
+     "test_procedure": "Inspect the privacy notice for required content and evidence it is current and published."},
+
+    {"id": "P2.1", "theme": "Privacy",
+     "title": "Choice and Consent",
+     "description": "The entity communicates choices available regarding collection, use, retention, disclosure, and disposal of personal information, and obtains consent where required.",
+     "artifacts": ["Consent records", "Preference centre configuration", "Consent language"],
+     "test_procedure": "For a sample of data subjects, inspect recorded consent and preference settings."},
+
+    {"id": "P3.1", "theme": "Privacy",
+     "title": "Collection Limited to Identified Purposes",
+     "description": "Personal information is collected consistent with the entity's objectives related to privacy.",
+     "artifacts": ["Data inventory / records of processing", "Collection forms"],
+     "test_procedure": "Compare collected data elements to the purposes documented in records of processing."},
+
+    {"id": "P3.2", "theme": "Privacy",
+     "title": "Explicit Consent for Sensitive Collection",
+     "description": "For information requiring explicit consent, the entity communicates the need for consent and obtains it before collection.",
+     "artifacts": ["Explicit consent records", "Sensitive data inventory"],
+     "test_procedure": "For sensitive data elements, inspect explicit consent obtained before collection."},
+
+    {"id": "P4.1", "theme": "Privacy",
+     "title": "Use Limited to Identified Purposes",
+     "description": "The entity limits the use of personal information to the purposes identified in its objectives related to privacy.",
+     "artifacts": ["Records of processing", "DPIAs", "Access controls on personal data"],
+     "test_procedure": "Inspect DPIAs and records of processing for new uses; confirm uses match identified purposes."},
+
+    {"id": "P4.2", "theme": "Privacy",
+     "title": "Retention of Personal Information",
+     "description": "The entity retains personal information consistent with its objectives related to privacy.",
+     "artifacts": ["Retention schedule", "Retention job configuration"],
+     "test_procedure": "Inspect retention schedule and evidence that automated retention rules are applied."},
+
+    {"id": "P4.3", "theme": "Privacy",
+     "title": "Secure Disposal of Personal Information",
+     "description": "The entity securely disposes of personal information to meet its objectives related to privacy.",
+     "artifacts": ["Disposal logs", "Secure deletion certificates"],
+     "test_procedure": "For a sample of disposal events, inspect secure deletion evidence."},
+
+    {"id": "P5.1", "theme": "Privacy",
+     "title": "Data Subject Access",
+     "description": "The entity grants identified and authenticated data subjects the ability to access their stored personal information for review.",
+     "artifacts": ["DSAR log", "Identity verification records", "Response records"],
+     "test_procedure": "For a sample of access requests, inspect identity verification and timely response."},
+
+    {"id": "P5.2", "theme": "Privacy",
+     "title": "Correction and Amendment Requests",
+     "description": "The entity corrects, amends, or appends personal information based on information provided by data subjects.",
+     "artifacts": ["Correction request log", "Change records"],
+     "test_procedure": "For a sample of correction requests, inspect that changes were made and communicated."},
+
+    {"id": "P6.1", "theme": "Privacy",
+     "title": "Disclosure to Third Parties With Consent",
+     "description": "The entity discloses personal information to third parties only with the explicit consent of data subjects or as otherwise permitted.",
+     "artifacts": ["Third-party disclosure register", "Data processing agreements"],
+     "test_procedure": "Inspect the disclosure register and DPAs for third parties receiving personal information."},
+
+    {"id": "P6.2", "theme": "Privacy",
+     "title": "Record of Authorised Disclosures",
+     "description": "The entity creates and retains a complete, accurate, and timely record of authorised disclosures of personal information.",
+     "artifacts": ["Disclosure log"],
+     "test_procedure": "Inspect the disclosure log for completeness against a sample of known disclosures."},
+
+    {"id": "P6.3", "theme": "Privacy",
+     "title": "Record of Unauthorised Disclosures",
+     "description": "The entity creates and retains a complete, accurate, and timely record of detected or reported unauthorised disclosures, including breaches.",
+     "artifacts": ["Privacy incident register", "Breach assessments"],
+     "test_procedure": "Inspect the privacy incident register and breach assessments for the period."},
+
+    {"id": "P6.4", "theme": "Privacy",
+     "title": "Privacy Commitments From Vendors",
+     "description": "The entity obtains privacy commitments from vendors and other third parties who have access to personal information.",
+     "artifacts": ["Vendor DPAs", "Vendor privacy assessments"],
+     "test_procedure": "For a sample of vendors processing personal information, inspect signed DPAs and assessments."},
+
+    {"id": "P6.5", "theme": "Privacy",
+     "title": "Vendor Breach Notification Commitments",
+     "description": "The entity obtains commitments from vendors to notify it of actual or suspected unauthorised disclosures of personal information.",
+     "artifacts": ["Contract breach-notification clauses"],
+     "test_procedure": "Inspect a sample of vendor contracts for breach-notification clauses and timeframes."},
+
+    {"id": "P6.6", "theme": "Privacy",
+     "title": "Breach Notification to Data Subjects and Regulators",
+     "description": "The entity provides notification of breaches and incidents to affected data subjects, regulators, and others as required.",
+     "artifacts": ["Breach notification records", "Regulator correspondence"],
+     "test_procedure": "For breaches in the period, inspect notifications made within required timeframes."},
+
+    {"id": "P6.7", "theme": "Privacy",
+     "title": "Accounting of Personal Information and Disclosures",
+     "description": "The entity provides data subjects with an accounting of the personal information held and disclosure of it, upon request.",
+     "artifacts": ["Accounting request responses"],
+     "test_procedure": "For a sample of requests, inspect the accounting provided to data subjects."},
+
+    {"id": "P7.1", "theme": "Privacy",
+     "title": "Quality of Personal Information",
+     "description": "The entity collects and maintains accurate, up-to-date, complete, and relevant personal information.",
+     "artifacts": ["Data quality checks", "Data validation rules"],
+     "test_procedure": "Inspect data quality procedures and evidence they are performed."},
+
+    {"id": "P8.1", "theme": "Privacy",
+     "title": "Privacy Inquiries, Complaints and Disputes",
+     "description": "The entity implements a process for receiving, addressing, resolving, and communicating the resolution of privacy inquiries, complaints, and disputes.",
+     "artifacts": ["Privacy complaint log", "Resolution records"],
+     "test_procedure": "For a sample of complaints, inspect timely resolution and communication to the data subject."},
 ]

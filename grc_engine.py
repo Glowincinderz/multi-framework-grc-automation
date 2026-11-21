@@ -291,6 +291,7 @@ def get_backup_list(backup_dir: str = None) -> list:
 
 _FRAMEWORK_MODULES = {
     "ISO27001": ("iso27001_controls", "ISO27001_CONTROLS"),
+    "SOC1":     ("soc1_controls",     "SOC1_CONTROLS"),
     "SOC2":     ("soc2_controls",     "SOC2_CONTROLS"),
     "NISTCSF":  ("nist_csf_controls", "NISTCSF_CONTROLS"),
     "PCIDSS":   ("pci_dss_controls",  "PCIDSS_CONTROLS"),
@@ -305,7 +306,7 @@ def load_controls_from_library(framework: str = "ISO27001"):
     Seed the controls table from the specified framework's control library.
 
     Args:
-        framework: One of 'ISO27001' (default), 'SOC2', 'NISTCSF', 'PCIDSS'.
+        framework: One of 'ISO27001' (default), 'SOC1', 'SOC2', 'NISTCSF', 'PCIDSS', 'ISO42001'.
     """
     fw = framework.upper()
     if fw not in _FRAMEWORK_MODULES:
@@ -596,12 +597,17 @@ def register_artifact(control_id: str, artifact_name: str, artifact_type: str,
     return artifact_id
 
 
-def seed_artifact_checklist():
-    """Pre-populate artifact requirements for all controls from the library."""
-    from iso27001_controls import ISO27001_CONTROLS
+def seed_artifact_checklist(framework: str = "ISO27001"):
+    """Pre-populate artifact requirements for every control in the given framework's library."""
+    fw = framework.upper()
+    if fw not in _FRAMEWORK_MODULES:
+        raise ValueError(f"Unknown framework '{framework}'. Supported: {SUPPORTED_FRAMEWORKS}")
+    import importlib
+    module_name, attr_name = _FRAMEWORK_MODULES[fw]
+    controls = getattr(importlib.import_module(module_name), attr_name)
     conn    = get_connection()
     seeded  = 0
-    for ctrl in ISO27001_CONTROLS:
+    for ctrl in controls:
         for art_name in ctrl["artifacts"]:
             existing = conn.execute(
                 "SELECT artifact_id FROM artifacts WHERE control_id=? AND artifact_name=?",
@@ -617,7 +623,7 @@ def seed_artifact_checklist():
                 seeded += 1
     conn.commit()
     conn.close()
-    logger.info("Seeded %d artifact requirements across all controls.", seeded)
+    logger.info("Seeded %d %s artifact requirements.", seeded, fw)
 
 
 def get_artifact_collection_status() -> dict:

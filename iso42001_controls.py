@@ -31,7 +31,7 @@ Added: SWOT Remediation — Prompt 9 extension (2026-04-07).
 STANDARD_VERSION        = "ISO/IEC 42001:2023"
 STANDARD_PUBLISHED_DATE = "2023-12-18"
 LIBRARY_LAST_REVIEWED   = "2026-04-07"
-CONTROL_COUNT_EXPECTED  = 38
+CONTROL_COUNT_EXPECTED  = 39
 
 ISO42001_CONTROLS = [
     # ─────────────────────────────────────────────────────────────────────────

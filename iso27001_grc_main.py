@@ -18,6 +18,7 @@ Usage:
     python iso27001_grc_main.py --backup          # Backup the SQLite database
     python iso27001_grc_main.py --alert-test      # Send a test notification to webhooks
     python iso27001_grc_main.py --alert-check     # Run all GRC alert condition checks
+    python iso27001_grc_main.py --init --framework SOC1      # Initialise with SOC 1 control objectives
     python iso27001_grc_main.py --init --framework SOC2      # Initialise with SOC 2 controls
     python iso27001_grc_main.py --status --framework NISTCSF # Status summary for NIST CSF
 
@@ -148,16 +149,11 @@ def cmd_init(framework: str = "ISO27001"):
     logger.info("=" * 64)
     init_database()
     load_controls_from_library(fw)
-    if fw == "ISO27001":
-        seed_artifact_checklist()
-        logger.info(
-            "GRC system initialised. All 93 ISO 27001:2022 controls and "
-            "artifact requirements are now loaded in the local database."
-        )
-    else:
-        logger.info(
-            "GRC system initialised with %s controls.", fw
-        )
+    seed_artifact_checklist(fw)
+    logger.info(
+        "GRC system initialised. %s controls and their artifact requirements "
+        "are now loaded in the local database.", fw
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -615,7 +611,7 @@ def main():
     parser.add_argument("--alert-check",  action="store_true", help="Run GRC alert condition checks")
     parser.add_argument("--framework",    type=str, default="ISO27001",
                         metavar="FRAMEWORK",
-                        help="Control framework: ISO27001 (default), SOC2, NISTCSF, PCIDSS")
+                        help="Control framework: ISO27001 (default), SOC1, SOC2, NISTCSF, PCIDSS, ISO42001")
     parser.add_argument("--out",          type=str,            help="Report output path")
 
     args = parser.parse_args()
