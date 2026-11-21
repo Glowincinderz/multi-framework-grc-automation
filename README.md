@@ -1,8 +1,10 @@
 # GRC Automation Framework
 
-[![CI](https://github.com/your-org/grc-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/grc-automation/actions/workflows/ci.yml)
+[![CI](https://github.com/Glowincinderz/multi-framework-grc-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/Glowincinderz/multi-framework-grc-automation/actions/workflows/ci.yml)
 
 A Python-based, end-to-end **Governance, Risk & Compliance (GRC) automation platform** that walks an organisation through every phase of a compliance programme — from initialising a control register and running risk assessments, through control testing and audit management, to evidence collection, Excel reporting, and real-time push alerts. All data is stored locally in SQLite with automated backup. Two-way integrations with **Drata** (compliance automation) and **Jira** (ticket management) are included out of the box.
+
+It also includes a **GRC as Code** module: vendor security questionnaires, vendor tiering, security intake requests and the risk register live in Git as YAML, are validated in CI on every pull request, and produce Markdown risk memos, optionally drafted with Claude. See [GRC as Code](#10-grc-as-code).
 
 The platform supports five internationally recognised frameworks in a single installation:
 
@@ -37,9 +39,10 @@ The platform supports five internationally recognised frameworks in a single ins
 7. [Environment Variables](#7-environment-variables)
 8. [Quick Start](#8-quick-start)
 9. [CLI Reference](#9-cli-reference)
-10. [Running Tests](#10-running-tests)
-11. [CI/CD Pipeline](#11-cicd-pipeline)
-12. [Security Notes](#12-security-notes)
+10. [GRC as Code](#10-grc-as-code)
+11. [Running Tests](#11-running-tests)
+12. [CI/CD Pipeline](#12-cicd-pipeline)
+13. [Security Notes](#13-security-notes)
 
 ---
 
@@ -388,7 +391,7 @@ The flagship framework. All 93 Annex A controls are implemented across four them
 ## 5. Project Structure
 
 ```
-GRC Preparation/
+multi-framework-grc-automation/
 │
 │  ── Entry point ────────────────────────────────────────────────────
 ├── iso27001_grc_main.py       CLI, interactive menu, command dispatch
@@ -418,23 +421,24 @@ GRC Preparation/
 ├── pyproject.toml             Package metadata and tool configuration
 ├── .env.example               Environment variable template
 │
+│  ── GRC as Code ─────────────────────────────────────────────────────
+├── vendor_risk.py             CLI: validate, tier, assess, intake, register
+├── grc_as_code/
+│   ├── questionnaire.yaml     Vendor security questionnaire with red-flag rules
+│   ├── vendors/*.yaml         One file per vendor (fictional examples included)
+│   ├── intake_example.yaml    Security intake request template
+│   └── risk_register.yaml     Risk register with appetite threshold
+│
+│  ── Tests and CI ────────────────────────────────────────────────────
+├── tests/
+│   ├── test_vendor_risk.py    Tiering, red flags, intake, register, memo, CLI
+│   └── test_grc_engine.py     Engine smoke tests on a throwaway database
+├── .github/workflows/ci.yml   GitHub Actions: YAML validation + pytest
+│
 │  ── Generated at runtime ──────────────────────────────────────────
-├── grc_database.db            SQLite database (created on --init)
+├── grc_database.db            SQLite database (created on --init, git-ignored)
 ├── backups/                   Timestamped DB backups (auto-pruned to 7)
-├── *.xlsx                     GRC Excel reports
-│
-│  ── CI/CD ──────────────────────────────────────────────────────────
-├── .github/
-│   └── workflows/
-│       └── ci.yml             GitHub Actions: unit tests + offline smoke tests
-│
-│  ── Tests ───────────────────────────────────────────────────────────
-└── tests/
-    ├── __init__.py
-    ├── test_grc_engine.py     DB, controls, risks, tests, audits,
-    │                          artifacts, backup, standard version tracking
-    └── test_api_hardening.py  Retry logic, credential masking,
-                               schema validation, region config
+└── *.xlsx                     GRC Excel reports (git-ignored)
 ```
 
 ---
@@ -445,8 +449,8 @@ GRC Preparation/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/grc-automation.git
-cd grc-automation
+git clone https://github.com/Glowincinderz/multi-framework-grc-automation.git
+cd multi-framework-grc-automation
 
 # 2. Install dependencies
 pip install -r requirements.txt
@@ -475,6 +479,8 @@ cp .env.example .env
 | `GRC_DB_PATH` | No | `./grc_database.db` | Override SQLite database path |
 | `GRC_BACKUP_DIR` | No | `./backups` | Override backup directory |
 | `GRC_MAX_BACKUPS` | No | `7` | Maximum backup files to retain |
+| `ANTHROPIC_API_KEY` | For `--ai` memos | — | Claude API key for AI-drafted risk memo summaries |
+| `GRC_AI_MODEL` | No | `claude-sonnet-5-5` | Claude model used for memo drafting |
 
 All variables can be set in a `.env` file at the project root (loaded automatically via `python-dotenv`) or exported as shell environment variables.
 
@@ -546,67 +552,61 @@ Options:
 
 ---
 
-## 10. Running Tests
+## 10. GRC as Code
 
-The test suite requires no live API keys or network access. All external calls are mocked.
+Vendor risk, security intake and the risk register are kept as YAML in Git, so every change is a reviewed pull request with full history, and CI checks every file before it merges.
+
+| File | Purpose |
+|---|---|
+| `grc_as_code/questionnaire.yaml` | Security questionnaire (SSO/MFA, EDR, encryption, AI data use, subprocessors, incident notification, physical security), each question with the answer that raises a red flag and its severity |
+| `grc_as_code/vendors/*.yaml` | One file per vendor: data classification, access, criticality, AI use, SOC 2 / ISO 27001 attestations, DPA and AI data-use terms, questionnaire answers |
+| `grc_as_code/intake_example.yaml` | Security intake request for a new product, internal tool, data center or vendor |
+| `grc_as_code/risk_register.yaml` | Risk register with likelihood, impact, owner, treatment, review date and an appetite threshold |
+
+**Vendor tiering.** Each vendor gets an inherent score (0-9) from data classification, access level, business criticality and whether it processes data with AI. Tier 1 (score 6+) is reviewed every 12 months, Tier 2 every 24, Tier 3 every 36.
+
+**Red flags.** A vendor is flagged when a questionnaire answer matches a red-flag rule, a SOC 2 or ISO 27001 report period ended more than 12 months ago, a Tier 1 vendor has no attestation, confidential data is shared without a signed DPA, or an AI provider has no contractual AI data-use terms.
+
+**Security intake.** Intake requests are scored on data sensitivity, internet exposure, personal data, AI use and autonomy, export-controlled data and data center scope. The output lists the reviews required, such as privacy impact assessment, AI impact assessment (ISO/IEC 42001), third-party review or trade compliance review.
+
+**Risk memos.** `assess` writes a Markdown memo to `reports/`. With `--ai` and an `ANTHROPIC_API_KEY`, the decision summary is drafted by Claude and marked for GRC review. Without a key, or if the call fails, a deterministic template is used, so the memo is never blocked.
 
 ```bash
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage report
-pytest tests/ --cov=. --cov-report=term-missing
-
-# Run a specific test file
-pytest tests/test_grc_engine.py -v
-pytest tests/test_api_hardening.py -v
+python vendor_risk.py validate                                            # check all YAML (runs in CI)
+python vendor_risk.py tier                                                # tier every vendor, show next review
+python vendor_risk.py assess grc_as_code/vendors/example-llm-inference-provider.yaml
+python vendor_risk.py assess grc_as_code/vendors/example-llm-inference-provider.yaml --ai
+python vendor_risk.py intake grc_as_code/intake_example.yaml              # score an intake request
+python vendor_risk.py register                                            # risks above appetite or overdue
 ```
 
-**Test coverage includes:**
-
-- Database initialisation and idempotency
-- Control loading for ISO 27001 (count and required field validation)
-- Risk register CRUD and score calculation
-- Control test recording and status propagation
-- Audit creation, finding management, and closure
-- Artefact registration and collection status
-- Database backup creation and validity
-- Standard version constant verification
-- Drata and Jira credential masking
-- Retry logic (503 retries, 429 rate limiting, 4xx no-retry)
-- API response schema validation
-- Region configuration via environment variable
+All vendors in `grc_as_code/vendors/` are fictional examples.
 
 ---
 
-## 11. CI/CD Pipeline
+## 11. Running Tests
 
-The GitHub Actions workflow at `.github/workflows/ci.yml` runs automatically on every push and pull request.
+The test suite needs no API keys or network access.
 
-**Jobs:**
+```bash
+pytest -v
+```
 
-| Job | Trigger | What it does |
-|---|---|---|
-| `Unit Tests` | Every push / PR | Runs `pytest tests/ --cov` |
-| `Offline Smoke Test` | After unit tests pass | Runs all CLI commands with mock data for all 5 frameworks |
-| `Live Integration` | Push to `main` only (opt-in) | Runs live Drata and Jira syncs using repository secrets |
-
-To enable live integration tests, set the repository variable `RUN_LIVE_INTEGRATION` to `true` and add the following secrets under **Settings → Secrets and variables → Actions**:
-
-| Secret | Description |
-|---|---|
-| `DRATA_API_KEY` | Drata workspace API key |
-| `DRATA_REGION` | `us` or `eu` |
-| `JIRA_BASE_URL` | Your Atlassian Cloud base URL |
-| `JIRA_EMAIL` | Email associated with the Jira token |
-| `JIRA_API_TOKEN` | Jira REST API token |
-| `JIRA_PROJECT_KEY` | Jira project key (e.g. `GRC`) |
-| `SLACK_WEBHOOK_URL` | Optional — for alert notification tests |
-| `TEAMS_WEBHOOK_URL` | Optional — for alert notification tests |
+It covers vendor tiering thresholds, each red-flag rule, review cadence, memo rendering, the AI-summary fallback, intake scoring, risk register appetite and overdue checks, validation of every YAML file in the repository, and engine smoke tests (control libraries for all five frameworks, risk scoring, backup) on a throwaway database.
 
 ---
 
-## 12. Security Notes
+## 12. CI/CD Pipeline
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request, on Python 3.11 and 3.12:
+
+1. Validate the questionnaire, vendor files, intake template and risk register
+2. Run the test suite
+3. Print the vendor tiering and risk register reports
+
+---
+
+## 13. Security Notes
 
 - **Never commit `.env`** — it is git-ignored. Commit only `.env.example` with placeholder values.
 - **API keys are masked in all log output** — only the first four characters are visible. The full key value will never appear in log files or console output.

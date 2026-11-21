@@ -35,3 +35,9 @@ Thumbs.db
 *.swo
 .idea/
 .vscode/
+
+# SQLite journal files
+*.db-journal
+
+# Generated vendor risk memos
+reports/

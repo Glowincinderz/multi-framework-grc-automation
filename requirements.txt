@@ -10,6 +10,9 @@ openpyxl>=3.1.2
 # ── Environment variable management (optional: python-dotenv for .env loading) ─
 python-dotenv>=1.0.0
 
+# ── GRC as Code (YAML questionnaires, vendors, intake, risk register) ───────
+PyYAML>=6.0
+
 # ── Development / Testing ─────────────────────────────────────────────────────
 pytest>=8.0.0
 pytest-cov>=5.0.0
