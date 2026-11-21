@@ -1,0 +1,40 @@
+# Risk register kept in Git. Score = likelihood x impact (1-5 each).
+# Risks scoring at or above the appetite threshold need a treatment plan and owner sign-off.
+appetite_threshold: 12
+risks:
+  - id: R-001
+    title: AI inference provider may retain prompts containing confidential design data
+    category: Third-Party / AI
+    likelihood: 3
+    impact: 5
+    treatment: Mitigate
+    owner: Head of Information Security
+    status: open
+    review_date: 2027-01-31
+  - id: R-002
+    title: Colocation provider SOC 2 report is more than 12 months old
+    category: Third-Party / Data Center
+    likelihood: 2
+    impact: 4
+    treatment: Mitigate
+    owner: Infrastructure Lead
+    status: open
+    review_date: 2026-10-15
+  - id: R-003
+    title: Quarterly access reviews for cloud console not yet automated
+    category: Identity & Access
+    likelihood: 3
+    impact: 3
+    treatment: Mitigate
+    owner: IT Manager
+    status: open
+    review_date: 2027-02-28
+  - id: R-004
+    title: Legacy marketing tool lacks a signed DPA
+    category: Privacy
+    likelihood: 2
+    impact: 2
+    treatment: Accept
+    owner: Marketing Director
+    status: accepted
+    review_date: 2027-06-30

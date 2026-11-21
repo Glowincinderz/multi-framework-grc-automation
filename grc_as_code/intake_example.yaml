@@ -1,0 +1,13 @@
+# Security intake request for a new product, internal tool or data center.
+# Copy this file, fill it in, and open a pull request; CI scores it automatically.
+request_id: INTAKE-2026-001
+title: Internal coding assistant for engineering
+type: internal_tool            # new_product | internal_tool | data_center | vendor
+requested_by: Engineering
+data_classification: confidential
+internet_facing: false
+handles_personal_data: false
+uses_ai: true
+ai_autonomy: suggest_only      # none | suggest_only | acts_with_approval | acts_autonomously
+third_party_vendor: Example LLM Inference Provider
+export_controlled_data: true

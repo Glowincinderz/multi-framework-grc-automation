@@ -1,0 +1,61 @@
+# Vendor security questionnaire, managed in Git.
+# Each question declares the answer that should raise a red flag and how severe it is.
+# Change questions by pull request so every edit is reviewed and versioned.
+version: "2026.11"
+questions:
+  - id: IAM-01
+    domain: Identity & Access
+    question: Does the vendor support SAML or OIDC single sign-on for customer accounts?
+    red_flag_if: false
+    severity: high
+  - id: IAM-02
+    domain: Identity & Access
+    question: Is MFA enforced for all vendor staff with access to customer data or production?
+    red_flag_if: false
+    severity: high
+  - id: END-01
+    domain: Endpoint Security
+    question: Is EDR deployed on all vendor endpoints and servers that handle customer data?
+    red_flag_if: false
+    severity: medium
+  - id: ENC-01
+    domain: Encryption
+    question: Is customer data encrypted at rest (AES-256 or equivalent)?
+    red_flag_if: false
+    severity: high
+  - id: ENC-02
+    domain: Encryption
+    question: Is customer data encrypted in transit with TLS 1.2 or higher?
+    red_flag_if: false
+    severity: high
+  - id: AI-01
+    domain: AI Data Use
+    question: Does the vendor use customer data, prompts or outputs to train or fine-tune models?
+    red_flag_if: true
+    severity: high
+  - id: AI-02
+    domain: AI Data Use
+    question: Can the customer set or shorten retention of prompts and outputs?
+    red_flag_if: false
+    severity: medium
+  - id: PRIV-01
+    domain: Privacy
+    question: Does the vendor publish and notify customers of changes to its subprocessor list?
+    red_flag_if: false
+    severity: medium
+  - id: PRIV-02
+    domain: Privacy
+    question: Can customer data be kept in a chosen region (for example US, Canada or EU)?
+    red_flag_if: false
+    severity: low
+  - id: IR-01
+    domain: Incident Response
+    question: Does the vendor commit to notify customers of a security incident within 72 hours?
+    red_flag_if: false
+    severity: high
+  - id: PHY-01
+    domain: Physical Security
+    question: For hosting or colocation, are data halls protected by badge plus biometric access and 24x7 monitoring?
+    red_flag_if: false
+    severity: medium
+    applies_to: [colocation, hosting]
