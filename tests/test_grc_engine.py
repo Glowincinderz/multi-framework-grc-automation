@@ -15,7 +15,7 @@ def engine(tmp_path, monkeypatch):
     return grc_engine
 
 
-@pytest.mark.parametrize("framework", ["ISO27001", "SOC2", "NISTCSF", "PCIDSS", "ISO42001"])
+@pytest.mark.parametrize("framework", ["ISO27001", "SOC1", "SOC2", "NISTCSF", "PCIDSS", "ISO42001"])
 def test_control_library_loads_and_is_idempotent(engine, framework):
     engine.load_controls_from_library(framework)
     first = engine.get_control_summary(framework)
@@ -45,3 +45,13 @@ def test_add_risk_rejects_out_of_range(engine):
 def test_backup_creates_file(engine, tmp_path):
     path = engine.backup_database(str(tmp_path / "backups"))
     assert path and (tmp_path / "backups").exists()
+
+
+@pytest.mark.parametrize("framework", ["ISO27001", "SOC1", "SOC2", "NISTCSF", "PCIDSS", "ISO42001"])
+def test_artifact_checklist_seeds_for_every_framework(engine, framework):
+    engine.load_controls_from_library(framework)
+    engine.seed_artifact_checklist(framework)
+    first = engine.get_artifact_collection_status()["Total"]
+    engine.seed_artifact_checklist(framework)  # idempotent
+    assert first > 0
+    assert engine.get_artifact_collection_status()["Total"] == first
